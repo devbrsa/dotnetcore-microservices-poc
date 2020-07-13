@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using PaymentService.Api.Queries;
 using PaymentService.Configuration;
 using PaymentService.DataAccess.Marten;
 using PaymentService.Domain;
@@ -40,7 +41,7 @@ namespace PaymentService
 
             services.AddMarten(Configuration.GetConnectionString("PgConnection"));
             services.AddPaymentDemoInitializer();
-            services.AddMediatR();
+            services.AddMediatR(typeof(GetAccountBalanceQuery));
             services.AddLogingBehaviour();
             services.AddSingleton<PolicyAccountNumberGenerator>();
             services.AddRabbitListeners();

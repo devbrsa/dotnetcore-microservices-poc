@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using PolicyService.Api.Commands;
 using PolicyService.DataAccess.NHibernate;
 using PolicyService.Messaging.RabbitMq;
 using PolicyService.RestClients;
@@ -28,7 +29,7 @@ namespace PolicyService
             services.AddMvc()
                 .AddNewtonsoftJson()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-            services.AddMediatR();
+            services.AddMediatR(typeof(CreateOfferCommand));
             services.AddPricingRestClient();
             services.AddNHibernate(Configuration.GetConnectionString("DefaultConnection"));
             services.AddRabbit();
@@ -38,7 +39,7 @@ namespace PolicyService
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseExceptionHandler("/error");
-            
+
             if (!env.IsDevelopment())
             {
                 app.UseHsts();

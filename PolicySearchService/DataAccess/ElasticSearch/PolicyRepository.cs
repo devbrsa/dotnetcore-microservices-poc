@@ -1,9 +1,9 @@
 ﻿using Nest;
 using PolicySearchService.Domain;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Policy = PolicySearchService.Domain.Policy;
 
 namespace PolicySearchService.DataAccess.ElasticSearch
 {
@@ -37,7 +37,7 @@ namespace PolicySearchService.DataAccess.ElasticSearch
                             )
                     ));
 
-           return result.Documents.ToList();
+            return result.Documents.ToList();
         }
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using PolicySearchService.Api.Queries;
 using PolicySearchService.DataAccess.ElasticSearch;
 using PolicySearchService.Messaging.RabbitMq;
 using PolicyService.Api.Events;
@@ -30,7 +31,7 @@ namespace PolicySearchService
             services.AddMvc()
                 .AddNewtonsoftJson()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-            services.AddMediatR();
+            services.AddMediatR(typeof(FindPolicyQuery));
             services.AddElasticSearch(Configuration.GetConnectionString("ElasticSearchConnection"));
             services.AddRabbitListeners();
         }

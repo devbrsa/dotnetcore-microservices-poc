@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using PricingService.Api.Commands;
 using PricingService.Configuration;
 using PricingService.DataAccess.Marten;
 using PricingService.Infrastructure;
@@ -29,14 +30,14 @@ namespace PricingService
             services.AddDiscoveryClient(Configuration);
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
-                .AddNewtonsoftJson(opt => 
+                .AddNewtonsoftJson(opt =>
                 {
                     opt.SerializerSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.Auto;
                 });
-            
+
             services.AddMarten(Configuration.GetConnectionString("DefaultConnection"));
             services.AddPricingDemoInitializer();
-            services.AddMediatR();
+            services.AddMediatR(typeof(CalculatePriceCommand));
             services.AddLoggingBehavior();
         }
 

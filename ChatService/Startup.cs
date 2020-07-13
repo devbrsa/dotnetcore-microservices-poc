@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using ChatService.Api.Commands;
 using ChatService.Hubs;
 using ChatService.Messaging.RabbitMq;
 using MediatR;
@@ -32,9 +33,9 @@ namespace ChatService
         {
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
-            
-            services.AddMediatR();
-            
+
+            services.AddMediatR(typeof(SendNotificationCommand));
+
             services.AddCors(opt => opt.AddPolicy("CorsPolicy",
                 builder =>
                 {
@@ -44,17 +45,17 @@ namespace ChatService
                         .AllowCredentials()
                         .WithOrigins(appSettingsSection.Get<AppSettings>().AllowedChatOrigins);
                 }));
-            
+
             services.AddMvc()
                 .AddNewtonsoftJson()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-            
+
             var appSettings = appSettingsSection.Get<AppSettings>();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             services.AddAuthentication(x =>
                 {
                     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;    
+                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 })
                 .AddJwtBearer(x =>
                 {
@@ -78,17 +79,17 @@ namespace ChatService
                             {
                                 context.Token = accessToken;
                             }
-                            return Task.CompletedTask;    
+                            return Task.CompletedTask;
                         }
                     };
                 });
 
             services.AddAuthorization(_ => { });
-            
+
             services.AddSignalR();
-            
+
             services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
-            
+
             services.AddRabbitListeners();
         }
 
@@ -115,7 +116,7 @@ namespace ChatService
                 endpoints.MapHub<AgentChatHub>("/agentsChat");
             });
 
-            app.UseRabbitListeners(new List<Type> {typeof(PolicyCreated)});
+            app.UseRabbitListeners(new List<Type> { typeof(PolicyCreated) });
         }
     }
 }

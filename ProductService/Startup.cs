@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ProductService.Api.Commands;
 using ProductService.DataAccess.EF;
 using ProductService.Init;
 using Steeltoe.Discovery.Client;
@@ -28,7 +29,7 @@ namespace ProductService
             services.AddMvc()
                 .AddNewtonsoftJson(JsonOptions)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-            services.AddMediatR();
+            services.AddMediatR(typeof(ActivateProductCommand));
             services.AddProductDemoInitializer();
         }
 
@@ -36,7 +37,7 @@ namespace ProductService
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseRouting();
-            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -51,7 +52,7 @@ namespace ProductService
             app.UseDiscoveryClient();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
-        
+
         private void JsonOptions(MvcNewtonsoftJsonOptions options)
         {
             options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
